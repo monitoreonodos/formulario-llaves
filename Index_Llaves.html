@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Solicitud / Entrega de Llaves</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f4f4;
+        padding: 20px;
+    }
+    .container {
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        max-width: 600px;
+        margin: auto;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 { text-align: center; }
+    label { font-weight: bold; margin-top: 15px; display: block; }
+    input, select {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+    }
+    button {
+        width: 100%;
+        margin-top: 20px;
+        background: #0078ff;
+        color: white;
+        padding: 12px;
+        font-size: 16px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+</style>
+
+</head>
+<body>
+
+<div class="container">
+    <h2>Solicitud / Entrega de Llaves</h2>
+
+    <form id="formLlaves">
+
+        <!-- NODO -->
+        <label>Nodo</label>
+        <select id="nodo" required>
+            <option value="">Selecciona...</option>
+            <option>Cipreses</option>
+            <option>Conquistadores</option>
+            <option>Francisco Moreyra</option>
+            <option>Guardia Peruana</option>
+            <option>Hipolito Unanue</option>
+            <option>Juan Pablo</option>
+            <option>La Molina</option>
+            <option>Lince</option>
+            <option>Los Alamos</option>
+            <option>Los Jardines</option>
+            <option>Pelitres</option>
+            <option>Pista Nueva</option>
+            <option>Rep. de Panama</option>
+            <option>Salamanca</option>
+            <option>San Luis</option>
+            <option>Santos Chocano</option>
+            <option>Trigal II</option>
+            <option>Uruguay</option>
+        </select>
+
+        <!-- CÓDIGO DE LLAVE -->
+        <label>Código de Llave</label>
+        <select id="codigo" required>
+            <option value="">Selecciona un nodo primero...</option>
+        </select>
+
+        <!-- Nombre -->
+        <label>Nombre Completo</label>
+        <input type="text" id="nombre" required>
+
+        <!-- Teléfono -->
+        <label>Número de Teléfono</label>
+        <input type="tel" id="telefono" maxlength="9" minlength="9" required pattern="[0-9]{9}">
+
+        <!-- Tipo Solicitud -->
+        <label>Tipo de Solicitud</label>
+        <select id="tipo" required>
+            <option value="">Selecciona...</option>
+            <option>Préstamo de llave</option>
+            <option>Devolución de llave</option>
+        </select>
+
+        <button type="submit">Enviar</button>
+
+    </form>
+</div>
+
+<script>
+// --- LISTADO DE CÓDIGOS POR NODO ---
+const llavesPorNodo = {
+    "Cipreses": ["02 TP", "02 BCK", "02 OF"],
+    "Conquistadores": ["03 TP", "03 BCK", "03 OF"],
+    "Francisco Moreyra": ["04 TP", "04 BCK", "04 OF"],
+    "Guardia Peruana": ["05 TP", "05 BCK", "05 OF"],
+    "Hipolito Unanue": ["06 TP", "06 BCK", "06 OF"],
+    "Juan Pablo": ["07 TP", "07 BCK", "07 OF"],
+    "La Molina": ["08 TP", "08 BCK", "08 OF"],
+    "Los Alamos": ["09 TP", "09 BCK", "09 OF"],
+    "Los Jardines": ["10 TP", "10 BCK", "10 OF"],
+    "Pelitres": ["11 TP", "11 BCK", "11 OF"],
+    "Pista Nueva": ["12 TP", "12 BCK", "12 OF"],
+    "Rep. de Panama": ["13 TP", "13 BCK", "13 OF"],
+    "Salamanca": ["14 TP", "14 BCK", "14 OF"],
+    "San Luis": ["15 TP", "15 BCK", "15 OF"],
+    "Lince": ["16 TP", "16 BCK", "16 OF"],
+    "Santos Chocano": ["17 TP", "17 BCK", "17 OF"],
+    "Trigal II": ["18 TP", "18 BCK", "18 OF"],
+    "Uruguay": ["19 TP", "19 BCK", "19 OF"]
+};
+
+// --- Manejo del cambio de nodo ---
+document.getElementById("nodo").addEventListener("change", function () {
+    const nodo = this.value;
+    const codigo = document.getElementById("codigo");
+
+    // Limpiar opciones previas
+    codigo.innerHTML = "";
+
+    if (!nodo) {
+        codigo.innerHTML = `<option value="">Selecciona un nodo primero...</option>`;
+        return;
+    }
+
+    // Agregar las llaves del nodo seleccionado
+    llavesPorNodo[nodo].forEach(llave => {
+        const opt = document.createElement("option");
+        opt.value = llave;
+        opt.textContent = llave;
+        codigo.appendChild(opt);
+    });
+});
+
+// Validación del teléfono
+document.getElementById("telefono").addEventListener("input", function () {
+    const v = this.value;
+
+    this.value = v.replace(/[^0-9]/g, "").slice(0, 9);
+
+    if (/^([0-9])\1{8}$/.test(this.value)) {
+        this.setCustomValidity("El número no puede tener todos los dígitos iguales.");
+    } else {
+        this.setCustomValidity("");
+    }
+});
+
+document.getElementById("formLlaves").addEventListener("submit", function(e) {
+    e.preventDefault();
+    alert("Formulario enviado correctamente. Puedes usarlo para generar QR.");
+});
+</script>
+
+</body>
+</html>
