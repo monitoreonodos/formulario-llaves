@@ -85,7 +85,7 @@
 
         <!-- Teléfono -->
         <label>Número de Teléfono</label>
-        <input type="tel" id="telefono" maxlength="9" minlength="9" required pattern="[0-9]{9}">
+        <input type="tel" id="telefono" maxlength="9" minlength="9" required pattern="[0-9]9">
 
         <!-- Tipo Solicitud -->
         <label>Tipo de Solicitud</label>
@@ -101,6 +101,9 @@
 </div>
 
 <script>
+// URL DEL FLUJO HTTP DE POWER AUTOMATE
+const FLOW_URL = "https://defaultfacb56070a434409acc1b1e269faf7.a8.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/a2297b653a7f49f483de0a050d792ccb/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Fd4q23krpTN8JF5k1Ve9i4adI7lQw0kSNHFIxWrxDH0";
+
 // --- LISTADO DE CÓDIGOS POR NODO ---
 const llavesPorNodo = {
     "Cipreses": ["02 TP", "02 BCK", "02 OF"],
@@ -128,7 +131,6 @@ document.getElementById("nodo").addEventListener("change", function () {
     const nodo = this.value;
     const codigo = document.getElementById("codigo");
 
-    // Limpiar opciones previas
     codigo.innerHTML = "";
 
     if (!nodo) {
@@ -136,7 +138,6 @@ document.getElementById("nodo").addEventListener("change", function () {
         return;
     }
 
-    // Agregar las llaves del nodo seleccionado
     llavesPorNodo[nodo].forEach(llave => {
         const opt = document.createElement("option");
         opt.value = llave;
@@ -158,11 +159,42 @@ document.getElementById("telefono").addEventListener("input", function () {
     }
 });
 
-document.getElementById("formLlaves").addEventListener("submit", function(e) {
+// Envío del formulario al flujo HTTP
+document.getElementById("formLlaves").addEventListener("submit", async function(e) {
     e.preventDefault();
-    alert("Formulario enviado correctamente. Puedes usarlo para generar QR.");
+
+    const data = {
+        nodo: document.getElementById("nodo").value,
+        codigo: document.getElementById("codigo").value,
+        nombre: document.getElementById("nombre").value,
+        telefono: document.getElementById("telefono").value,
+        tipo: document.getElementById("tipo").value
+    };
+
+    try {
+        const response = await fetch(FLOW_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            alert("Datos enviados correctamente 🎉");
+            document.getElementById("formLlaves").reset();
+        } else {
+            const text = await response.text();
+            alert("Error al enviar datos. Código: " + response.status + "\n" + text);
+        }
+
+    } catch (error) {
+        alert("Error de conexión: " + error);
+    }
 });
 </script>
 
 </body>
 </html>
+
+
