@@ -85,7 +85,7 @@
 
         <!-- Teléfono -->
         <label>Número de Teléfono</label>
-        <input type="tel" id="telefono" maxlength="9" minlength="9" required pattern="[0-9]9">
+        <input type="tel" id="telefono" maxlength="9" minlength="9" required pattern="[0-9]{9}">
 
         <!-- Tipo Solicitud -->
         <label>Tipo de Solicitud</label>
@@ -104,7 +104,7 @@
 // URL DEL FLUJO HTTP DE POWER AUTOMATE
 const FLOW_URL = "https://defaultfacb56070a434409acc1b1e269faf7.a8.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/a2297b653a7f49f483de0a050d792ccb/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Fd4q23krpTN8JF5k1Ve9i4adI7lQw0kSNHFIxWrxDH0";
 
-// --- LISTADO DE CÓDIGOS POR NODO ---
+// Códigos por nodo
 const llavesPorNodo = {
     "Cipreses": ["02 TP", "02 BCK", "02 OF"],
     "Conquistadores": ["03 TP", "03 BCK", "03 OF"],
@@ -126,7 +126,7 @@ const llavesPorNodo = {
     "Uruguay": ["19 TP", "19 BCK", "19 OF"]
 };
 
-// --- Manejo del cambio de nodo ---
+// Llenar códigos según nodo
 document.getElementById("nodo").addEventListener("change", function () {
     const nodo = this.value;
     const codigo = document.getElementById("codigo");
@@ -159,7 +159,7 @@ document.getElementById("telefono").addEventListener("input", function () {
     }
 });
 
-// Envío del formulario al flujo HTTP
+// Enviar datos al flujo
 document.getElementById("formLlaves").addEventListener("submit", async function(e) {
     e.preventDefault();
 
@@ -175,18 +175,13 @@ document.getElementById("formLlaves").addEventListener("submit", async function(
         const response = await fetch(FLOW_URL, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "text/plain;charset=utf-8"
             },
             body: JSON.stringify(data)
         });
 
-        if (response.ok) {
-            alert("Datos enviados correctamente 🎉");
-            document.getElementById("formLlaves").reset();
-        } else {
-            const text = await response.text();
-            alert("Error al enviar datos. Código: " + response.status + "\n" + text);
-        }
+        alert("Formulario enviado correctamente 🎉");
+        document.getElementById("formLlaves").reset();
 
     } catch (error) {
         alert("Error de conexión: " + error);
@@ -196,5 +191,6 @@ document.getElementById("formLlaves").addEventListener("submit", async function(
 
 </body>
 </html>
+
 
 
