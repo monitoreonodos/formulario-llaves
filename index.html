@@ -1,196 +1,275 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Solicitud / Entrega de Llaves</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <title>Solicitud / Entrega de Llaves</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background: #f4f4f4;
-        padding: 20px;
-    }
-    .container {
-        background: #fff;
-        padding: 20px;
-        border-radius: 10px;
-        max-width: 600px;
-        margin: auto;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    h2 { text-align: center; }
-    label { font-weight: bold; margin-top: 15px; display: block; }
-    input, select {
-        width: 100%;
-        padding: 10px;
-        margin-top: 5px;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-    }
-    button {
-        width: 100%;
-        margin-top: 20px;
-        background: #0078ff;
-        color: white;
-        padding: 12px;
-        font-size: 16px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-    }
-</style>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
 
+        .container {
+            max-width: 650px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 25px 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 4px;
+            font-weight: bold;
+        }
+
+        select, input[type="text"], input[type="tel"] {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        button {
+            margin-top: 18px;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            background: #0078d4;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            background: #999;
+            cursor: default;
+        }
+
+        .mensaje {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .mensaje.ok {
+            background: #e6ffe6;
+            border: 1px solid #00a000;
+            color: #006000;
+        }
+
+        .mensaje.error {
+            background: #ffe6e6;
+            border: 1px solid #d40000;
+            color: #8b0000;
+        }
+    </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Solicitud / Entrega de Llaves</h2>
+    <h1>Solicitud / Entrega de Llaves</h1>
 
-    <form id="formLlaves">
-
-        <!-- NODO -->
-        <label>Nodo</label>
+    <form id="llavesForm">
+        <!-- NODO (Choice) -->
+        <label for="nodo">Nodo</label>
         <select id="nodo" required>
-            <option value="">Selecciona...</option>
-            <option>Cipreses</option>
-            <option>Conquistadores</option>
-            <option>Francisco Moreyra</option>
-            <option>Guardia Peruana</option>
-            <option>Hipolito Unanue</option>
-            <option>Juan Pablo</option>
-            <option>La Molina</option>
-            <option>Lince</option>
-            <option>Los Alamos</option>
-            <option>Los Jardines</option>
-            <option>Pelitres</option>
-            <option>Pista Nueva</option>
-            <option>Rep. de Panama</option>
-            <option>Salamanca</option>
-            <option>San Luis</option>
-            <option>Santos Chocano</option>
-            <option>Trigal II</option>
-            <option>Uruguay</option>
+            <option value="">-- Seleccionar Nodo --</option>
+            <!-- ⚠️ Estos textos deben coincidir con la columna NODO de Microsoft List -->
+            <option value="Cipreses">Cipreses</option>
+            <option value="Conquistadores">Conquistadores</option>
+            <option value="Francisco Moreyra">Francisco Moreyra</option>
+            <option value="Guardia Peruana">Guardia Peruana</option>
+            <option value="Hipolito Unanue">Hipolito Unanue</option>
+            <option value="Juan Pablo">Juan Pablo</option>
+            <option value="La Molina">La Molina</option>
+            <option value="Los Alamos">Los Alamos</option>
+            <option value="Los Jardines">Los Jardines</option>
+            <option value="Pelitres">Pelitres</option>
+            <option value="Pista Nueva">Pista Nueva</option>
+            <option value="Rep. de Panama">Rep. de Panama</option>
+            <option value="Salamanca">Salamanca</option>
+            <option value="San Luis">San Luis</option>
+            <option value="Lince">Lince</option>
+            <option value="Santos Chocano">Santos Chocano</option>
+            <option value="Trigal II">Trigal II</option>
+            <option value="Uruguay">Uruguay</option>
         </select>
 
-        <!-- CÓDIGO DE LLAVE -->
-        <label>Código de Llave</label>
-        <select id="codigo" required>
-            <option value="">Selecciona un nodo primero...</option>
+        <!-- CÓDIGO DE LLAVE (Choice dependiente del nodo) -->
+        <label for="codigo">Código de Llave</label>
+        <select id="codigo" required disabled>
+            <option value="">-- Selecciona primero un nodo --</option>
         </select>
 
-        <!-- Nombre -->
-        <label>Nombre Completo</label>
+        <!-- NOMBRE COMPLETO (Texto) -->
+        <label for="nombre">Nombre completo</label>
         <input type="text" id="nombre" required>
 
-        <!-- Teléfono -->
-        <label>Número de Teléfono</label>
-        <input type="tel" id="telefono" maxlength="9" minlength="9" required pattern="[0-9]{9}">
+        <!-- TELEFONO (Texto) -->
+        <label for="telefono">Número de teléfono</label>
+        <input type="tel" id="telefono" required>
 
-        <!-- Tipo Solicitud -->
-        <label>Tipo de Solicitud</label>
+        <!-- TIPO DE SOLICITUD (Choice) -->
+        <label for="tipo">Tipo de solicitud</label>
         <select id="tipo" required>
-            <option value="">Selecciona...</option>
-            <option>Préstamo de llave</option>
-            <option>Devolución de llave</option>
+            <option value="">-- Seleccionar tipo --</option>
+            <!-- ⚠️ Estos valores deben coincidir con las opciones de la columna TIPO en la List -->
+            <option value="Entrega">Entrega</option>
+            <option value="Devolución">Devolución</option>
+            <option value="Préstamo">Préstamo</option>
         </select>
 
-        <button type="submit">Enviar</button>
+        <button type="submit" id="enviarBtn">Enviar</button>
 
+        <div id="mensaje" class="mensaje"></div>
     </form>
 </div>
 
 <script>
-// URL DEL FLUJO HTTP DE POWER AUTOMATE
-const FLOW_URL = "https://defaultfacb56070a434409acc1b1e269faf7.a8.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/a2297b653a7f49f483de0a050d792ccb/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Fd4q23krpTN8JF5k1Ve9i4adI7lQw0kSNHFIxWrxDH0";
+    // 1) Pega aquí la URL de tu disparador HTTP de Power Automate
+    const FLOW_URL = "https://defaultfacb56070a434409acc1b1e269faf7.a8.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/a2297b653a7f49f483de0a050d792ccb/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Fd4q23krpTN8JF5k1Ve9i4adI7lQw0kSNHFIxWrxDH0"; 
+    // Ejemplo:
+    // const FLOW_URL = "https://prod-00.....";
 
-// Códigos por nodo
-const llavesPorNodo = {
-    "Cipreses": ["02 TP", "02 BCK", "02 OF"],
-    "Conquistadores": ["03 TP", "03 BCK", "03 OF"],
-    "Francisco Moreyra": ["04 TP", "04 BCK", "04 OF"],
-    "Guardia Peruana": ["05 TP", "05 BCK", "05 OF"],
-    "Hipolito Unanue": ["06 TP", "06 BCK", "06 OF"],
-    "Juan Pablo": ["07 TP", "07 BCK", "07 OF"],
-    "La Molina": ["08 TP", "08 BCK", "08 OF"],
-    "Los Alamos": ["09 TP", "09 BCK", "09 OF"],
-    "Los Jardines": ["10 TP", "10 BCK", "10 OF"],
-    "Pelitres": ["11 TP", "11 BCK", "11 OF"],
-    "Pista Nueva": ["12 TP", "12 BCK", "12 OF"],
-    "Rep. de Panama": ["13 TP", "13 BCK", "13 OF"],
-    "Salamanca": ["14 TP", "14 BCK", "14 OF"],
-    "San Luis": ["15 TP", "15 BCK", "15 OF"],
-    "Lince": ["16 TP", "16 BCK", "16 OF"],
-    "Santos Chocano": ["17 TP", "17 BCK", "17 OF"],
-    "Trigal II": ["18 TP", "18 BCK", "18 OF"],
-    "Uruguay": ["19 TP", "19 BCK", "19 OF"]
-};
-
-// Llenar códigos según nodo
-document.getElementById("nodo").addEventListener("change", function () {
-    const nodo = this.value;
-    const codigo = document.getElementById("codigo");
-
-    codigo.innerHTML = "";
-
-    if (!nodo) {
-        codigo.innerHTML = `<option value="">Selecciona un nodo primero...</option>`;
-        return;
-    }
-
-    llavesPorNodo[nodo].forEach(llave => {
-        const opt = document.createElement("option");
-        opt.value = llave;
-        opt.textContent = llave;
-        codigo.appendChild(opt);
-    });
-});
-
-// Validación del teléfono
-document.getElementById("telefono").addEventListener("input", function () {
-    const v = this.value;
-
-    this.value = v.replace(/[^0-9]/g, "").slice(0, 9);
-
-    if (/^([0-9])\1{8}$/.test(this.value)) {
-        this.setCustomValidity("El número no puede tener todos los dígitos iguales.");
-    } else {
-        this.setCustomValidity("");
-    }
-});
-
-// Enviar datos al flujo
-document.getElementById("formLlaves").addEventListener("submit", async function(e) {
-    e.preventDefault();
-
-    const data = {
-        nodo: document.getElementById("nodo").value,
-        codigo: document.getElementById("codigo").value,
-        nombre: document.getElementById("nombre").value,
-        telefono: document.getElementById("telefono").value,
-        tipo: document.getElementById("tipo").value
+    // 2) Tabla de códigos por nodo (como la que ya usabas):
+    const llavesPorNodo = {
+        "Cipreses": ["02 TP", "02 BCK", "02 OF"],
+        "Conquistadores": ["03 TP", "03 BCK", "03 OF"],
+        "Francisco Moreyra": ["04 TP", "04 BCK", "04 OF"],
+        "Guardia Peruana": ["05 TP", "05 BCK", "05 OF"],
+        "Hipolito Unanue": ["06 TP", "06 BCK", "06 OF"],
+        "Juan Pablo": ["07 TP", "07 BCK", "07 OF"],
+        "La Molina": ["08 TP", "08 BCK", "08 OF"],
+        "Los Alamos": ["09 TP", "09 BCK", "09 OF"],
+        "Los Jardines": ["10 TP", "10 BCK", "10 OF"],
+        "Pelitres": ["11 TP", "11 BCK", "11 OF"],
+        "Pista Nueva": ["12 TP", "12 BCK", "12 OF"],
+        "Rep. de Panama": ["13 TP", "13 BCK", "13 OF"],
+        "Salamanca": ["14 TP", "14 BCK", "14 OF"],
+        "San Luis": ["15 TP", "15 BCK", "15 OF"],
+        "Lince": ["16 TP", "16 BCK", "16 OF"],
+        "Santos Chocano": ["17 TP", "17 BCK", "17 OF"],
+        "Trigal II": ["18 TP", "18 BCK", "18 OF"],
+        "Uruguay": ["19 TP", "19 BCK", "19 OF"]
     };
 
-    try {
-        const response = await fetch(FLOW_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "text/plain;charset=utf-8"
-            },
-            body: JSON.stringify(data)
+    const nodoSelect = document.getElementById('nodo');
+    const codigoSelect = document.getElementById('codigo');
+    const form = document.getElementById('llavesForm');
+    const mensajeDiv = document.getElementById('mensaje');
+    const enviarBtn = document.getElementById('enviarBtn');
+
+    // Cuando cambia el nodo, actualizamos los códigos de llave
+    nodoSelect.addEventListener('change', function () {
+        const nodoSeleccionado = nodoSelect.value;
+
+        // Limpiar opciones actuales
+        codigoSelect.innerHTML = "";
+        codigoSelect.disabled = true;
+
+        if (!nodoSeleccionado || !llavesPorNodo[nodoSeleccionado]) {
+            const option = document.createElement('option');
+            option.value = "";
+            option.textContent = "-- Selecciona primero un nodo --";
+            codigoSelect.appendChild(option);
+            return;
+        }
+
+        // Agregar opción por defecto
+        const optionDefault = document.createElement('option');
+        optionDefault.value = "";
+        optionDefault.textContent = "-- Seleccionar Código de Llave --";
+        codigoSelect.appendChild(optionDefault);
+
+        // Agregar las llaves correspondientes al nodo
+        llavesPorNodo[nodoSeleccionado].forEach(function (codigo) {
+            const option = document.createElement('option');
+            option.value = codigo;      // ⚠️ debe coincidir con la opción de la columna "Codigo de llave"
+            option.textContent = codigo;
+            codigoSelect.appendChild(option);
         });
 
-        alert("Formulario enviado correctamente 🎉");
-        document.getElementById("formLlaves").reset();
+        codigoSelect.disabled = false;
+    });
 
-    } catch (error) {
-        alert("Error de conexión: " + error);
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        mensajeDiv.style.display = 'none';
+        mensajeDiv.textContent = '';
+
+        const nodo = nodoSelect.value.trim();
+        const codigo = codigoSelect.value.trim();
+        const nombre = document.getElementById('nombre').value.trim();
+        const telefono = document.getElementById('telefono').value.trim();
+        const tipo = document.getElementById('tipo').value.trim();
+
+        if (!nodo || !codigo || !nombre || !telefono || !tipo) {
+            mostrarMensaje('Por favor completa todos los campos.', false);
+            return;
+        }
+
+        // JSON que recibirá el flujo (coincide con tu esquema: nodo, codigo, nombre, telefono, tipo)
+        const data = {
+            nodo: nodo,
+            codigo: codigo,
+            nombre: nombre,
+            telefono: telefono,
+            tipo: tipo
+        };
+
+        enviarBtn.disabled = true;
+        enviarBtn.textContent = 'Enviando...';
+
+        try {
+            const response = await fetch(FLOW_URL, {
+                method: 'POST',
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok || response.status === 202) {
+                mostrarMensaje('Registro enviado correctamente. Se creó el ítem en Microsoft Lists.', true);
+                form.reset();
+                codigoSelect.innerHTML = '<option value="">-- Selecciona primero un nodo --</option>';
+                codigoSelect.disabled = true;
+            } else {
+                const text = await response.text();
+                console.error('Error flujo:', response.status, text);
+                mostrarMensaje('Hubo un error al enviar la información. Revisa el flujo en Power Automate.', false);
+            }
+        } catch (error) {
+            console.error('Error de red:', error);
+            mostrarMensaje('No se pudo conectar con el flujo. Revisa la URL o la conexión a Internet.', false);
+        } finally {
+            enviarBtn.disabled = false;
+            enviarBtn.textContent = 'Enviar';
+        }
+    });
+
+    function mostrarMensaje(texto, exito) {
+        mensajeDiv.textContent = texto;
+        mensajeDiv.className = 'mensaje ' + (exito ? 'ok' : 'error');
+        mensajeDiv.style.display = 'block';
     }
-});
 </script>
 
 </body>
 </html>
-
 
 
