@@ -122,6 +122,25 @@
         <label for="telefono">Número de teléfono</label>
         <input type="tel" id="telefono" required>
 
+
+        <!-- AREA (Choice) -->
+        <label for="area">Área</label>
+        <select id="area" required>
+            <option value="">-- Seleccionar área --</option>
+            <!-- ⚠️ Estos valores deben coincidir con las opciones de la columna AREA en Microsoft List -->
+            <option value="NOC">Ingenería</option>
+            <option value="Infraestructura">Infraestructura</option>
+            <option value="Energía">NOC</option>
+            <option value="Seguridad">O&M</option>
+            <option value="Proveedores">Proveedores</option>
+        </select>
+
+        <!-- PROVEEDOR / CONTRATA (Solo si AREA = Proveedores) -->
+        <div id="proveedorContainer" style="display:none;">
+            <label for="proveedor">Nombre de la contrata / proveedor</label>
+            <input type="text" id="proveedor" placeholder="Ej: Contrata XYZ / Proveedor ABC">
+        </div>
+
         <!-- TIPO DE SOLICITUD (Choice) -->
         <label for="tipo">Tipo de solicitud</label>
         <select id="tipo" required>
@@ -166,9 +185,27 @@
 
     const nodoSelect = document.getElementById('nodo');
     const codigoSelect = document.getElementById('codigo');
+    const areaSelect = document.getElementById('area');
+    const proveedorContainer = document.getElementById('proveedorContainer');
+    const proveedorInput = document.getElementById('proveedor');
     const form = document.getElementById('llavesForm');
     const mensajeDiv = document.getElementById('mensaje');
     const enviarBtn = document.getElementById('enviarBtn');
+
+    // Mostrar/ocultar campo "Proveedor" solo cuando AREA = Proveedores
+    function toggleProveedorField() {
+        const isProveedores = areaSelect.value === "Proveedores";
+        proveedorContainer.style.display = isProveedores ? "block" : "none";
+        proveedorInput.required = isProveedores;
+
+        if (!isProveedores) {
+            proveedorInput.value = "";
+        }
+    }
+
+    areaSelect.addEventListener('change', toggleProveedorField);
+    // Ejecuta una vez al cargar
+    toggleProveedorField();
 
     // Cuando cambia el nodo, actualizamos los códigos de llave
     nodoSelect.addEventListener('change', function () {
@@ -213,19 +250,29 @@
         const codigo = codigoSelect.value.trim();
         const nombre = document.getElementById('nombre').value.trim();
         const telefono = document.getElementById('telefono').value.trim();
+        const area = document.getElementById('area').value.trim();
+        const proveedor = document.getElementById('proveedor').value.trim();
         const tipo = document.getElementById('tipo').value.trim();
 
-        if (!nodo || !codigo || !nombre || !telefono || !tipo) {
+        if (!nodo || !codigo || !nombre || !telefono || !area || !tipo) {
             mostrarMensaje('Por favor completa todos los campos.', false);
             return;
         }
 
-        // JSON que recibirá el flujo (coincide con tu esquema: nodo, codigo, nombre, telefono, tipo)
+        if (area === "Proveedores" && !proveedor) {
+            mostrarMensaje('Por favor ingresa el nombre de la contrata / proveedor.', false);
+            document.getElementById('proveedor').focus();
+            return;
+        }
+
+        // JSON que recibirá el flujo (actualiza tu Parse JSON para incluir: nodo, codigo, nombre, telefono, area, tipo)
         const data = {
             nodo: nodo,
             codigo: codigo,
             nombre: nombre,
             telefono: telefono,
+            area: area,
+            proveedor: (area === "Proveedores" ? proveedor : ""),
             tipo: tipo
         };
 
@@ -242,6 +289,7 @@
             if (response.ok || response.status === 202) {
                 mostrarMensaje('Registro enviado correctamente. Se creó el ítem en Microsoft Lists.', true);
                 form.reset();
+                toggleProveedorField();
                 codigoSelect.innerHTML = '<option value="">-- Selecciona primero un nodo --</option>';
                 codigoSelect.disabled = true;
             } else {
