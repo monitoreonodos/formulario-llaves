@@ -128,17 +128,20 @@
         <select id="area" required>
             <option value="">-- Seleccionar área --</option>
             <!-- ⚠️ Estos valores deben coincidir con las opciones de la columna AREA en Microsoft List -->
-            <option value="NOC">Ingenería</option>
+            <option value="Ingeniería">Ingeniería</option>
             <option value="Infraestructura">Infraestructura</option>
-            <option value="Energía">NOC</option>
-            <option value="Seguridad">O&M</option>
+            <option value="NOC">NOC</option>
+            <option value="O&M">O&M</option>
+            <option value="Implementaciones">Implementaciones</option>
+            <option value="Planta Externa">Planta Externa</option>
+            <option value="Mantenimiento y Emergencias">Mantenimiento y Emergencias</option>
             <option value="Proveedores">Proveedores</option>
         </select>
 
         <!-- PROVEEDOR / CONTRATA (Solo si AREA = Proveedores) -->
         <div id="proveedorContainer" style="display:none;">
             <label for="proveedor">Nombre de la contrata / proveedor</label>
-            <input type="text" id="proveedor" placeholder="Ej: Contrata XYZ / Proveedor ABC">
+            <input type="text" id="proveedor" name="proveedor" placeholder="Ej: Contrata XYZ / Proveedor ABC">
         </div>
 
         <!-- TIPO DE SOLICITUD (Choice) -->
@@ -192,13 +195,14 @@
     const mensajeDiv = document.getElementById('mensaje');
     const enviarBtn = document.getElementById('enviarBtn');
 
-    // Mostrar/ocultar campo "Proveedor" solo cuando AREA = Proveedores
+    // Mostrar/ocultar campo "Proveedor / Contrata" cuando el AREA lo requiera
     function toggleProveedorField() {
-        const isProveedores = areaSelect.value === "Proveedores";
-        proveedorContainer.style.display = isProveedores ? "block" : "none";
-        proveedorInput.required = isProveedores;
+        const areasConProveedor = ["Implementaciones", "Planta Externa", "Mantenimiento y Emergencias", "Proveedores"];
+        const requiereProveedor = areasConProveedor.includes(areaSelect.value);
+        proveedorContainer.style.display = requiereProveedor ? "block" : "none";
+        proveedorInput.required = requiereProveedor;
 
-        if (!isProveedores) {
+        if (!requiereProveedor) {
             proveedorInput.value = "";
         }
     }
@@ -272,7 +276,7 @@
             nombre: nombre,
             telefono: telefono,
             area: area,
-            proveedor: (area === "Proveedores" ? proveedor : ""),
+            proveedor: (["Implementaciones", "Planta Externa", "Mantenimiento y Emergencias", "Proveedores"].includes(area) ? proveedor : ""),
             tipo: tipo
         };
 
@@ -315,5 +319,6 @@
 
 </body>
 </html>
+
 
 
